@@ -1,0 +1,17 @@
+{
+  "name": "exportexcel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./server.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aj Ansari",
+  "license": "MIT",
+  "dependencies": {
+    "boom": "^7.1.0", 
+    "hapi": "^16.6.2",
+    "xlsx": "^0.11.7"
+  }
+}
