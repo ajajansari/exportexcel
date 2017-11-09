@@ -1,8 +1,10 @@
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 let { templateExcelExport } = require('./template');
 
 // generate two tab excel files
-var exportExcelTwoTab = function (req, res, data) {
+var exportExcelTwoTabHtml = function (req, res, data) {
 
     try {
 
@@ -21,12 +23,15 @@ var exportExcelTwoTab = function (req, res, data) {
             //getting the data at the index
             let _dataForTab = (data != undefined && data[index] != undefined) ? data[index] : { name: "", header: {}, data: [] };
 
-            //get the Tab/Sheet
-            let _tabSheeDataArray = returnTabContent(templateExcelExport.sheets[index], _dataForTab);
+            ////get the Tab/Sheet
+            //let _tabSheeDataArray = returnTabContent(templateExcelExport.sheets[index], _dataForTab);
 
-            //generate/create as new sheet
-            let ws = XLSX.utils.aoa_to_sheet(_tabSheeDataArray);
+            ////generate/create as new sheet
+            //let ws = XLSX.utils.table_to_sheet(_tabSheeDataArray);
 
+            const dom = new JSDOM(`<table><tr><td><b>Hello world</b></td></tr></table>`);
+            let ws = XLSX.utils.table_to_sheet(dom);
+            
             //sheet name, if available in the data/config then take from there else template
             let _sheetName = data != undefined ?
                 (data[index] != undefined ? data[index].name : templateExcelExport.sheets[index].name) : templateExcelExport.sheets[index].name;
@@ -81,16 +86,6 @@ var exportExcelTwoTab = function (req, res, data) {
             _dataArray.push([]);
         }
 
-        _dataArray.push([{
-            v: "text", s: {
-                border: {
-                    left: { style: 'thick', color: { auto: 1 } },
-                    top: { style: 'thick', color: { auto: 1 } },
-                    bottom: { style: 'thick', color: { auto: 1 } }
-                }
-            }
-        }]);
-
         //append data if any
         if (excelData.data != undefined) {
             for (var i = 0; i < excelData.data.length; i++) {
@@ -113,4 +108,4 @@ var exportExcelTwoTab = function (req, res, data) {
     }
 }
 
-module.exports.exportExcelTwoTab = exportExcelTwoTab;
+module.exports.exportExcelTwoTabHtml = exportExcelTwoTabHtml;
