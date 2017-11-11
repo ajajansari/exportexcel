@@ -15,6 +15,8 @@ let templateExcelExport = {
             },
             spaceAfterHeader: 2,
             data: [],
+            dataHeaderTemplate: {},
+            dataValueTemplate: {},
             spaceAfterData: 1,
             footer: {
                 copy: "Copyright @ 2017"
@@ -30,6 +32,21 @@ let templateExcelExport = {
             },
             spaceAfterHeader: 3,
             data: [],
+            dataHeaderTemplate: {},
+            dataValueTemplate: {
+                numPer: {
+                    "t": "n", "z": "0.00%"
+                },
+                cur: {
+                    "t": "n", "z": "$#0.00"
+                },
+                numPer1: {
+                    "t": "n", "z": "0.000%"
+                },
+                cur1: {
+                    "t": "n", "z": "$#0.000"
+                }
+            },
             spaceAfterData: 5,
             footer: {
                 copy: "Copyright @ 2017"
@@ -39,13 +56,28 @@ let templateExcelExport = {
     dynamicTabs: {
         name: 'TabData',
         header: {
-            title: 'Fitch Solutions',
+            title: 'Abc Solutions',
             view: 'Portfolio - ',
             date: new Date().toLocaleDateString(),
             scale: 'Scale in - ',
         },
         spaceAfterHeader: 3,
         data: [],
+        dataHeaderTemplate: {},
+        dataValueTemplate: {
+            numPer: {
+                "t": "n", "z": "0.00%"
+            },
+            cur: {
+                "t": "n", "z": "$#0.00"
+            },
+            numPer1: {
+                "t": "n", "z": "0.000%"
+            },
+            cur1: {
+                "t": "n", "z": "$#0.000"
+            }
+        },
         spaceAfterData: 5,
         footer: { copy: 'Copyright @ 2017' },
     }
