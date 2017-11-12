@@ -16,13 +16,24 @@ var plugin = {
                 path: "/twotabs",
                 handler: function (request, reply) {
 
-                    let { exportExcelTwoTab } = require('./template/twotab/transform');
-
                     //passing data, TODO:will be updated as payload
-                    var { data } = require('./data');
+                    var { data } = require('./dataJson');
+
+                    const templateExcelExport = require('./template/twotab/template');
+                    const { exportExcelTwoTab } = require('./template/twotab/transform');
 
                     //generate two tabes
-                    exportExcelTwoTab(request, reply, data);
+                    let excelTwoTab = exportExcelTwoTab(templateExcelExport.templateExcelExport, data);
+
+                    //create buffer of workbook
+                    let buf = new Buffer(excelTwoTab, 'binary');
+
+                    //download the buffer
+                    return reply(buf)
+                        .encoding('binary')
+                        .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                        .header('content-disposition', `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
+
                 }
             },
             {

@@ -1,48 +1,52 @@
 'use strict';
 
+const XLSX = require('xlsx');
 const { tabContent } = require('../../methods/tabContent');
+const { sheetFromArrayOfArrays } = require('../../methods/sheetFromArrayOfArrays');
 
 // generate two tab excel files
 let exportExcelTwoTab = function (templateExcelExport, data) {
     try {
-        //object of xlsx
-        const XLSX = require('xlsx');
 
         //new book, workbook
-        let wb = XLSX.utils.book_new();
+        let wb = require('../../methods/workbook')(XLSX);
 
         //return if template is undefined
-        if (!templateExcelExport || !templateExcelExport.sheets) {
+        if (
+            typeof templateExcelExport == 'undefined' ||
+            typeof templateExcelExport.sheets == 'undefined' ||
+            typeof data == 'undefined'
+        ) {
             return;
         }
 
-        //code to generate the xlsx from template
-        for (let index = 0, length = templateExcelExport.sheets.length; index < length; index++) {
+        //code to generate the xlsx from data
+        for (let index = 0, length = data.length; index < length; index++) {
             //getting the data at the index
-            let dataForTab = {
-                name: '',
-                header: {},
-                data: [],
-            };
+            let dataForTab = data[index];
+            let templateForTab = {};
             let sheetName = '';
 
             //If the data is not undefined and and have data at index will find the dataForTab
-            //sheet name, if available in the data/config then take from there else template
-            if (typeof data != 'undefined' && typeof data[index] != 'undefined') {
-                dataForTab = data[index];
-                sheetName = data[index].name;
+            if (typeof templateExcelExport.sheets[index] != 'undefined') {
+                templateForTab = templateExcelExport.sheets[index];
             } else {
-                sheetName = templateExcelExport.sheets[index].name;
+                templateForTab = JSON.parse(JSON.stringify(templateExcelExport.dynamicTabs));
+                //Object.assign(templateForTab, templateExcelExport.dynamicTabs);
+            }
+
+            //sheet name, if available in the data/config then take from there else template
+            if (data[index].hasOwnProperty('name')) {
+                sheetName = `${data[index].name} - ${index}`;
+            } else {
+                sheetName = `${templateForTab.name} - ${index}`;
             }
 
             //get the Tab/Sheet
-            let tabSheeDataArray = tabContent(templateExcelExport.sheets[index], dataForTab);
-
-            //generate/create as new sheet
-            let ws = XLSX.utils.aoa_to_sheet(tabSheeDataArray);
+            let tabSheeDataArray = tabContent(templateForTab, dataForTab);
 
             //append tabs/sheets to workbook
-            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            wb.addRowsToSheet(sheetName, tabSheeDataArray).finalize();
         }
 
         //code to write sheet to workbook

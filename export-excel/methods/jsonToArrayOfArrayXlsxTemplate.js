@@ -15,7 +15,7 @@ let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) 
     let headerValue = {};
 
     // apply template for data header
-    if (template.dataHeaderTemplate.hasOwnProperty(headerKey)) {
+    if (typeof template.dataHeaderTemplate != 'undefined' && template.dataHeaderTemplate.hasOwnProperty(headerKey)) {
 
       //get the template
       let headerValueTemplate = template.dataHeaderTemplate[headerKey];
@@ -47,7 +47,7 @@ let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) 
       let dataValue = {};
 
       //assign the template to the column
-      if (template.dataValueTemplate.hasOwnProperty(headerKey)) {
+      if (typeof template.dataValueTemplate != 'undefined' && template.dataValueTemplate.hasOwnProperty(headerKey)) {
 
         //get the column tempalte
         let dataValueTemplate = template.dataValueTemplate[headerKey];

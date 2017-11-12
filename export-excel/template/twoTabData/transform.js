@@ -2,7 +2,6 @@
 
 const XLSX = require('xlsx');
 const { tabContent } = require('../../methods/tabContent');
-const { sheetFromArrayOfArrays } = require('../../methods/sheetFromArrayOfArrays');
 
 // generate two tab excel files
 let exportExcelTwoTab = function (templateExcelExport, data) {
@@ -31,7 +30,8 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
             if (typeof templateExcelExport.sheets[index] != 'undefined') {
                 templateForTab = templateExcelExport.sheets[index];
             } else {
-                templateForTab = templateExcelExport.dynamicTabs;
+                templateForTab = JSON.parse(JSON.stringify(templateExcelExport.dynamicTabs));
+                //Object.assign(templateForTab, templateExcelExport.dynamicTabs);
             }
 
             //sheet name, if available in the data/config then take from there else template

@@ -143,7 +143,7 @@
             else if (typeof cell.v === 'boolean') cell.t = 'b';
             else if (cell.v instanceof Date) {
               cell.t = 'n';
-              cell.z = 'dd/MMM/yy';
+              cell.z = 'dd-MMM-yy';
               cell.v = datenum(cell.v);
             }
             else cell.t = 's';

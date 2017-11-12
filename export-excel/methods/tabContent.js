@@ -10,17 +10,38 @@ const tabContent = function tabContent(template, excelData) {
 
   //append the headers
   for (let i = 0, length = headersProp.length; i < length; i++) {
+
     //header prop name
     let headerPropName = headersProp[i];
 
     //template header prop value
-    let tmpltHeaderValue = template.header.hasOwnProperty(headerPropName) ? template.header[headerPropName] : '';
+    let tmpltHeaderValue = {};
+    if (typeof template.header != "undefined" && template.header.hasOwnProperty(headerPropName)) {
+      tmpltHeaderValue = template.header[headerPropName];
+    }
 
     //data header prop value
-    let dataHeaderValue = excelData.header.hasOwnProperty(headerPropName) ? excelData.header[headerPropName] : '';
+    let dataHeaderValue = "";
+    if (typeof excelData.header != "undefined" && excelData.header.hasOwnProperty(headerPropName)) {
+      dataHeaderValue = excelData.header[headerPropName];
+    }
 
     //generate the header
-    let headerData = String(`${tmpltHeaderValue}${dataHeaderValue}`).trim();
+    let headerData = {};
+
+    //apply header with template
+    if (typeof tmpltHeaderValue == 'object') {
+      headerData = tmpltHeaderValue;
+      if (tmpltHeaderValue.hasOwnProperty('v')) {
+        headerData.v = `${tmpltHeaderValue.v}${dataHeaderValue}`;
+      }
+      else {
+        headerData.v = dataHeaderValue;
+      }
+    }
+    else {
+      headerData.v = `${tmpltHeaderValue}${dataHeaderValue}`;
+    }
 
     dataArray.push([headerData]);
   }
@@ -43,10 +64,41 @@ const tabContent = function tabContent(template, excelData) {
   //append footer from template
   let footersProp = Object.keys(template.footer);
   for (let m = 0, length = footersProp.length; m < length; m++) {
+
     //footer prop name
     let footerPropName = footersProp[m];
-    let tmpltFooterValue = template.footer.hasOwnProperty(footerPropName) ? template.footer[footerPropName] : '';
-    dataArray.push([tmpltFooterValue]);
+
+    //template header prop value
+    let tmpltFooterValue = "";
+    if (typeof template.footer != "undefined" && template.footer.hasOwnProperty(footerPropName)) {
+      tmpltFooterValue = template.footer[footerPropName];
+    }
+
+    //data footer prop value
+    let dataFooterValue = "";
+    if (typeof excelData.footer != "undefined" && excelData.footer.hasOwnProperty(footerPropName)) {
+      dataFooterValue = excelData.footer[footerPropName];
+    }
+
+    //generate the footer
+    let footerData = {};
+
+    //apply footer with template
+    if (typeof tmpltFooterValue != 'undefined' && typeof tmpltFooterValue == 'object') {
+      footerData = tmpltFooterValue;
+      if (tmpltFooterValue.hasOwnProperty('v')) {
+
+        footerData.v = `${tmpltFooterValue.v}${dataFooterValue}`;
+      }
+      else {
+        footerData.v = dataFooterValue;
+      }
+    }
+    else {
+      footerData.v = `${tmpltFooterValue}${dataFooterValue}`;
+    }
+
+    dataArray.push([footerData]);
   }
 
   return dataArray;
