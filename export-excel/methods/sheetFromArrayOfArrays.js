@@ -1,8 +1,29 @@
-
+const XLSX = require('XLSX');
 const { dateNum } = require('./dateAsNumber');
 
+// encode functions lifted from XLSX to eliminate dependency on XLSX so this can be serialized/deserialized to JSON
+const encode_row = function (row) {
+    return `${row + 1}`;
+}
+const encode_col = function (col) {
+    let s = '';
+    for (++col; col; col = Math.floor((col - 1) / 26)) s = String.fromCharCode((col - 1) % 26 + 65) + s;
+    return s;
+}
+const encode_cell = function (cell) {
+    return encode_col(cell.c) + encode_row(cell.r);
+}
+const encode_range = function (cs, ce) {
+    if (ce === undefined || typeof ce === 'number') return encode_range(cs.s, cs.e);
+    if (typeof cs !== 'string') cs = encode_cell(cs);
+    if (typeof ce !== 'string') ce = encode_cell(ce);
+    return cs == ce ? cs : `${cs}:${ce}`;
+}
+const datenum = function (v, date1904) {
+    if (date1904) v += 1462;
+    return (Date.parse(v) - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+}
 const sheetFromArrayOfArrays = function (data) {
-    const XLSX = require('XLSX');
     var ws = {};
     var range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
     for (var R = 0; R != data.length; ++R) {
@@ -13,7 +34,7 @@ const sheetFromArrayOfArrays = function (data) {
             if (range.e.c < C) range.e.c = C;
             var cell = { v: data[R][C] };
             if (cell.v == null) continue;
-            var cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
+            var cell_ref = encode_cell({ c: C, r: R });
 
             if (typeof cell.v === 'number') cell.t = 'n';
             else if (typeof cell.v === 'boolean') cell.t = 'b';
@@ -26,7 +47,7 @@ const sheetFromArrayOfArrays = function (data) {
             ws[cell_ref] = cell;
         }
     }
-    if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+    if (range.s.c < 10000000) ws['!ref'] = encode_range(range);
     return ws;
 }
 

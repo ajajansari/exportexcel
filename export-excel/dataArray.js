@@ -18,8 +18,11 @@ var data = [
         { "v": 0.618033989, "t": "n" },
         { "v": 0.618033989, "t": "n", "s": { "numFmt": "0.00%" } },
         { "v": 0.618033989, "t": "n", "s": { "numFmt": "0.00%" }, fill: { fgColor: { rgb: "FFFFCC00" } } },
-        [(new Date()).toLocaleString()]
+        { "v": "11/11/1992 7:07:06 AM" },
+        { "v": new Date("2017-11-20"), "t": "d", "z": 'dd-MMM-yy' },
+        { "v": new Date("2017/11/20"), "t": "d", "z": 'dd-mm-yy' }
     ]
 ];
 
-module.exports.dataArray = [["Abc Solutions"],["Portfolio - myPort"],["11/11/2017"],["Data in - Million"],[],[],[],[{"v":"album"},{"v":"year"},{"v":"numPer"},{"v":"cur"},{"v":"url"},{"v":"DOB"}],[{"v":"Taylor Swift"},{"v":2006},{"t":"n","s":{"numFmt":"0.00%"},"v":0.86},{"t":"n","s":{"numFmt":"$#0.00"},"v":23312},{"v":"Google","l":{"Target":"https://www.google.com","Tooltip":"Google"}},{"v":"1970-01-31T18:30:00.000Z"}],[{"v":"Taylor Swift"},{"v":2006},{"t":"n","s":{"numFmt":"0.00%"},"v":0.86},{"t":"n","s":{"numFmt":"$#0.00"},"v":23312},{"v":"Google","l":{"Target":"https://www.google.com","Tooltip":"Google"}},{"v":"1970-01-31T18:30:00.000Z"}],[],[],[],[],[],["Copyright @ 2017"]];
+module.exports.dataArray = data;
+//module.exports.dataArray = [["Abc Solutions"], ["Portfolio - myPort"], ["11/11/2017"], ["Data in - Million"], [], [], [], [{ "v": "album" }, { "v": "year" }, { "v": "numPer" }, { "v": "cur" }, { "v": "url" }, { "v": "DOB" }], [{ "v": "Taylor Swift" }, { "v": 2006 }, { "t": "n", "s": { "numFmt": "0.00%" }, "v": 0.86 }, { "t": "n", "s": { "numFmt": "$#0.00" }, "v": 23312 }, { "v": "Google", "l": { "Target": "https://www.google.com", "Tooltip": "Google" } }, { "v": "1970-01-31T18:30:00.000Z" }], [{ "v": "Taylor Swift" }, { "v": 2006 }, { "t": "n", "s": { "numFmt": "0.00%" }, "v": 0.86 }, { "t": "n", "s": { "numFmt": "$#0.00" }, "v": 23312 }, { "v": "Google", "l": { "Target": "https://www.google.com", "Tooltip": "Google" } }, { "v": "1970-01-31T18:30:00.000Z" }], [], [], [], [], [], ["Copyright @ 2017"]];

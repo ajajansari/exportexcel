@@ -8,6 +8,9 @@ server.connection({ host: 'localhost', port: port });
 server.register([
     {
         register: require('./export-excel/index.js')
+    },
+    {
+        register: require('./export-exceljs/index.js')
     }
 ], function (err) {
     if (err) {

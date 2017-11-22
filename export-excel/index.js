@@ -142,6 +142,37 @@ var plugin = {
         ]);
 
 
+        //this will load the template with header/table/template
+        server.route([
+            {
+                method: 'GET',
+                path: '/excelimage',
+                handler: function (request, reply) {
+                    try {
+
+
+                        const { exportExcel } = require('./exportExcel');
+
+                        //generate two tabes
+                        let excelTwoTab = exportExcel().exportExcel();
+
+                        //create buffer of workbook
+                        let buf = new Buffer(excelTwoTab, 'binary');
+
+                        //download the buffer
+                        return reply(buf)
+                            .encoding('binary')
+                            .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                            .header('content-disposition', `attachment; filename=excelImage.xlsx;`);
+                    } catch (err) {
+                        request.log(['error'], `An error -- ${JSON.stringify(err)} -- occurred, while generating the excel.`);
+                    }
+                },
+            },
+        ]);
+
+
+
         next();
     }
 };

@@ -60,7 +60,8 @@
       setFreeze(sheetName) {
         const ws = this.getSheet(sheetName);
         if (!ws['!freeze']) {
-          ws['!freeze'] = { xSplit: "1", ySplit: "1", topLeftCell: "B2", activePane: "bottomRight", state: "frozen" };
+          ws['!freeze'] = { xSplit: "2", ySplit: "0", topLeftCell: "A1", activePane: "bottomRight", state: "frozen" };
+          //ws['!freeze'] = { ySplit: "2", activePane: "bottomRight", state: "frozen" };
         }
         return this;
       },
@@ -143,7 +144,7 @@
             else if (typeof cell.v === 'boolean') cell.t = 'b';
             else if (cell.v instanceof Date) {
               cell.t = 'n';
-              cell.z = 'dd-MMM-yy';
+              //cell.z = 'dd-MMM-yy';
               cell.v = datenum(cell.v);
             }
             else cell.t = 's';
