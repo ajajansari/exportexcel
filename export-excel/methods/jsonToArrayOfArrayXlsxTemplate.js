@@ -57,14 +57,15 @@ let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) 
 
         //apply the link template to hyperlink column
         if (typeof value == 'object' && value.hasOwnProperty('type') && value['type'] === 'Uri') {
-          //dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
-          dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
+          dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
+          //dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
           let target = value.hasOwnProperty('target') ? value['target'] : "";
-          //dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
-          dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
+          dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
+          //dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
         }
         else {
-          dataValueTemplate.value = value;
+          dataValueTemplate.v = value;
+          //dataValueTemplate.value = value;
         }
 
         //assign value with template
@@ -77,15 +78,15 @@ let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) 
         var dataValueTemplate = {};
         //apply the link template to hyperlink column
         if (typeof value == 'object' && value.hasOwnProperty('type') && value['type'] === 'Uri') {
-          //dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
-          dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
+          dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
+          //dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
           let target = value.hasOwnProperty('target') ? value['target'] : "";
-          //dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
-          dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
+          dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
+          //dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
         }
         else {
-          //dataValueTemplate.v = value;
-          dataValueTemplate.value = value; //excelJs
+          dataValueTemplate.v = value;
+          //dataValueTemplate.value = value; //excelJs
         }
 
         //assign value with template

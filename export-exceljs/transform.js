@@ -3,6 +3,7 @@
 //const XLSX = require('xlsx');
 var Excel = require('exceljs');
 const { tabContent } = require('../export-excel/methods/tabContent');
+const { finalizeSheet } = require('./finalizeSheet');
 
 // generate two tab excel files
 let exportExcelTwoTab = function (templateExcelExport, data) {
@@ -16,6 +17,7 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
         wb.created = new Date();
         wb.modified = new Date();
         wb.lastPrinted = new Date();
+        wb.properties.date1904 = true;
 
         //return if template is undefined
         if (
@@ -57,8 +59,12 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
 
             let sheet = wb.addWorksheet(sheetName, { views: [{ xSplit: 1, ySplit: 1 }] });
             sheet.addRows(tabSheeDataArray);
-            sheet.addRow("").commit();
+            //sheet.addRow("").commit();
             //sheet.commit();
+
+            sheet = finalizeSheet(sheet);
+
+            sheet.addRow("").commit();
         }
 
         return wb;

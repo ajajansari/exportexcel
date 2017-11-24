@@ -13,11 +13,20 @@ var plugin = {
             },
             {
                 method: "GET",
+                path: "/export1",
+                handler: function (request, reply) {
+                    const { excelExport } = require('./demo1/image');
+                    excelExport();
+                    reply('Export1 - Done').code(201);
+                }
+            },
+            {
+                method: "GET",
                 path: "/export2",
                 handler: function (request, reply) {
 
                     //passing data, TODO:will be updated as payload
-                    var { data } = require('./data');
+                    let { data } = require('./data');
 
                     const templateExcelExport = require('./template');
                     const { exportExcelTwoTab } = require('./transform');
@@ -28,7 +37,9 @@ var plugin = {
                     // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
                     // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
 
-                    workbookExcel.xlsx.writeFile(templateExcelExport.templateExcelExport.workbookName).then(function () {
+                    let fileName = `${(new Date()).getMilliseconds()}${templateExcelExport.templateExcelExport.workbookName}`;
+
+                    workbookExcel.xlsx.writeFile(fileName).then(function () {
                         console.log("saved");
                         // res.download('test.xlsx'); 
                     });
