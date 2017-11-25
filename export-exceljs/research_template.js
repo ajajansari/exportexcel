@@ -61,7 +61,7 @@ const templateExcelExport = {
         {
             name: "Search Results",
             header: {
-                title: { v: "Fitch Solutions" },
+                title: { v: "Abc Solutions" },
                 view: { v: "Research - " },
                 date: {
                     v: new Date(),
@@ -149,7 +149,7 @@ const templateExcelExport = {
     dynamicTabs: {
         name: "Search Results",
         header: {
-            title: { v: "Fitch Solutions" },
+            title: { v: "Abc Solutions" },
             view: { v: "Research - " },
             date: {
                 v: new Date(),
