@@ -1,6 +1,6 @@
 const Excel = require('exceljs');
 
-module.exports.finalizeSheet = function (sheet) {
+module.exports.finalizeSheet = function (sheet, template) {
     sheet.eachRow(function (row, rowNumber) {
         row.eachCell(function (cell, colNumber) {
             let cellObjValue = cell.value;
@@ -63,5 +63,11 @@ module.exports.finalizeSheet = function (sheet) {
         });
     });
 
+    if (template.hasOwnProperty('views')) {
+        sheet.views = template.views
+    }
+
+    sheet.addRow("").commit();
+    
     return sheet;
 }

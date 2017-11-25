@@ -1,7 +1,9 @@
 'use strict';
 
+const cloneDeep = require('lodash.cloneDeep');
+
 //this method will return Array of Array of a Json Object with Header at the Top position
-let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) {
+const jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) {
   let dataToAoA = appendTodata || [];
 
   //append header, header keys
@@ -95,11 +97,11 @@ let jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) 
       }
 
       //append the column data
-      dataArray.push(dataValue);
+      dataArray.push(cloneDeep(dataValue));
     });
 
     //append data row
-    dataToAoA.push(dataArray);
+    dataToAoA.push(cloneDeep(dataArray));
   });
 
   return dataToAoA;

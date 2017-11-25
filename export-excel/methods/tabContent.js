@@ -1,6 +1,6 @@
 'use strict';
 
-let { jsonToArrayOfArrayXlsxTemplate } = require('./jsonToArrayOfArrayXlsxTemplate');
+const { jsonToArrayOfArrayXlsxTemplate } = require('./jsonToArrayOfArrayXlsxTemplate');
 
 //this method return the body of the sheet based on the data given
 const tabContent = function tabContent(template, excelData) {

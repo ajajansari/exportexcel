@@ -4,6 +4,7 @@
 var Excel = require('exceljs');
 const { tabContent } = require('../export-excel/methods/tabContent');
 const { finalizeSheet } = require('./finalizeSheet');
+const cloneDeep = require('lodash.cloneDeep');
 
 // generate two tab excel files
 let exportExcelTwoTab = function (templateExcelExport, data) {
@@ -38,9 +39,9 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
 
             //If the data is not undefined and and have data at index will find the dataForTab
             if (typeof templateExcelExport.sheets[index] != 'undefined') {
-                templateForTab = templateExcelExport.sheets[index];
+                templateForTab = cloneDeep(templateExcelExport.sheets[index]);
             } else {
-                templateForTab = JSON.parse(JSON.stringify(templateExcelExport.dynamicTabs));
+                templateForTab = cloneDeep(templateExcelExport.dynamicTabs);
                 //Object.assign(templateForTab, templateExcelExport.dynamicTabs);
             }
 
@@ -62,9 +63,9 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
             //sheet.addRow("").commit();
             //sheet.commit();
 
-            sheet = finalizeSheet(sheet);
+            sheet = finalizeSheet(sheet, templateForTab);
 
-            sheet.addRow("").commit();
+            //sheet.addRow("").commit();
         }
 
         return wb;

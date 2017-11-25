@@ -1,8 +1,8 @@
 'use strict';
 
 //two/three tab export example
-let templateExcelExport = {
-    workbookName: "twotabs.xlsx",
+const templateExcelExport = {
+    workbookName: "ResearchList.xlsx",
     sheets: [
         {
             name: "Disclaimer",
@@ -59,10 +59,10 @@ let templateExcelExport = {
             }
         },
         {
-            name: "TabData",
+            name: "Search Results",
             header: {
-                title: { v: "Abc Solutions" },
-                view: { v: "Portfolio - " },
+                title: { v: "Fitch Solutions" },
+                view: { v: "Research - " },
                 date: {
                     v: new Date(),
                     isDate: true,
@@ -73,10 +73,10 @@ let templateExcelExport = {
                 },
                 scale: { v: "Data in - " }
             },
-            spaceAfterHeader: 2,
+            spaceAfterHeader: 3,
             data: [],
             dataHeaderTemplate: {
-                numPer: {
+                Title: {
                     fill: {
                         type: 'pattern',
                         pattern: 'solid',
@@ -89,128 +89,151 @@ let templateExcelExport = {
                         right: { style: 'thin', color: { argb: 'FF000000' } }
                     }
                 },
-                cur: {
+                Category: {
                     fill: {
                         type: 'pattern',
                         pattern: 'solid',
                         fgColor: { argb: 'FF808080' }
+                    },
+                    border: {
+                        top: { style: 'thin', color: { argb: 'FF000000' } },
+                        left: { style: 'thin', color: { argb: 'FF000000' } },
+                        bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                        right: { style: 'thin', color: { argb: 'FF000000' } }
                     }
                 },
-                DOB: {
+                ResearchDate: {
                     fill: {
                         type: 'pattern',
                         pattern: 'solid',
                         fgColor: { argb: 'FF808080' }
-                    }
-                },
-                numPer1: {
-                    fill: {
-                        type: 'pattern',
-                        pattern: 'solid',
-                        fgColor: { argb: 'FF808080' }
-                    }
-                },
-                cur1: {
-                    fill: {
-                        type: 'pattern',
-                        pattern: 'solid',
-                        fgColor: { argb: 'FF808080' }
+                    },
+                    border: {
+                        top: { style: 'thin', color: { argb: 'FF000000' } },
+                        left: { style: 'thin', color: { argb: 'FF000000' } },
+                        bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                        right: { style: 'thin', color: { argb: 'FF000000' } }
                     }
                 }
             },
             dataValueTemplate: {
-                album: {
+                Title: {
                     font: {
-                        name: 'Arial Black',
+                        name: 'Calibri',
                         color: { argb: 'FF0000FF' },
-                        family: 2,
-                        size: 14,
-                        italic: true
+                        size: 11
                     },
                     alignment: {
-                        horizontal: "fill"
+                        // horizontal: "fill"
                     }
                 },
-                numPer: {
-                    "numFmt": "0.00%",
+                Category: {
                     alignment: {
-                        horizontal: "distributed"
+                        // horizontal: "distributed"
                     }
                 },
-                cur: {
-                    "numFmt": '"$"#,##0.00;[Red]\-"$"#,##0.00',
-                    alignment: {
-                        horizontal: "distributed"
-                    }
-                },
-                DOB: {
+                ResearchDate: {
                     isDate: true,
                     numFmt: "dd-MMM-yyyy",
                     alignment: {
-                        horizontal: "distributed"
-                    }
-                },
-                numPer1: {
-                    "numFmt": "0.0%",
-                    alignment: {
-                        horizontal: "distributed"
-                    }
-                },
-                cur1: {
-                    "numFmt": '"$"#,##0;[Red]\-"$"#,##0',
-                    alignment: {
-                        horizontal: "distributed"
+                        // horizontal: "distributed"
                     }
                 }
             },
-            spaceAfterData: 5,
+            spaceAfterData: 3,
             footer: {
                 copy: { v: "Copyright @ 2017" }
-            },
-            views: [
-                { state: 'frozen', xSplit: 2, ySplit: 3 }
-            ]
+            }
         },
     ],
     dynamicTabs: {
-        name: 'TabData',
+        name: "Search Results",
         header: {
-            title: {
-                v: 'Abc Solutions'
-            },
-            view: {
-                v: 'Portfolio - '
-            },
+            title: { v: "Fitch Solutions" },
+            view: { v: "Research - " },
             date: {
                 v: new Date(),
                 isDate: true,
                 numFmt: "dd/MMM/yyyy",
+                alignment: {
+                    vertical: 'top', horizontal: 'left'
+                }
             },
-            scale: { v: 'Scale in - ' },
+            scale: { v: "Data in - " }
         },
-        spaceAfterHeader: 2,
+        spaceAfterHeader: 3,
         data: [],
-        dataHeaderTemplate: {},
+        dataHeaderTemplate: {
+            Title: {
+                fill: {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF808080' }
+                },
+                border: {
+                    top: { style: 'thin', color: { argb: 'FF000000' } },
+                    left: { style: 'thin', color: { argb: 'FF000000' } },
+                    bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                    right: { style: 'thin', color: { argb: 'FF000000' } }
+                }
+            },
+            Category: {
+                fill: {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF808080' }
+                },
+                border: {
+                    top: { style: 'thin', color: { argb: 'FF000000' } },
+                    left: { style: 'thin', color: { argb: 'FF000000' } },
+                    bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                    right: { style: 'thin', color: { argb: 'FF000000' } }
+                }
+            },
+            Date: {
+                fill: {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF808080' }
+                },
+                border: {
+                    top: { style: 'thin', color: { argb: 'FF000000' } },
+                    left: { style: 'thin', color: { argb: 'FF000000' } },
+                    bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                    right: { style: 'thin', color: { argb: 'FF000000' } }
+                }
+            }
+        },
         dataValueTemplate: {
-            numPer: {
-                "numFmt": "0.00%"
+            Title: {
+                font: {
+                    name: 'Arial Black',
+                    color: { argb: 'FF0000FF' },
+                    family: 2,
+                    size: 14,
+                    italic: true
+                },
+                alignment: {
+                    // horizontal: "fill"
+                }
             },
-            cur: {
-                "numFmt": '"$"#,##0.00;[Red]\-"$"#,##0.00'
+            Category: {
+                alignment: {
+                    // horizontal: "distributed"
+                }
             },
-            DOB: {
+            Date: {
                 isDate: true,
                 numFmt: "dd-MMM-yyyy",
-            },
-            numPer1: {
-                "numFmt": "0.0%"
-            },
-            cur1: {
-                "numFmt": '"$"#,##0;[Red]\-"$"#,##0'
+                alignment: {
+                    // horizontal: "distributed"
+                }
             }
         },
         spaceAfterData: 3,
-        footer: { copy: { v: 'Copyright @ 2017' } },
+        footer: {
+            copy: { v: "Copyright @ 2017" }
+        }
     }
 };
 

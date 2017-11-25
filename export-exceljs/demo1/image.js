@@ -11,7 +11,7 @@ module.exports.excelExport = function () {
         extension: 'jpeg',
     });
 
-    //sheet1.addImage(imageId1, 'B2:D6');
+    sheet1.addImage(imageId1, 'B2:D6');
     var reColumns = [
         { header: 'FirstName', key: 'firstname' },
         { header: 'LastName', key: 'lastname' },

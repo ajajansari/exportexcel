@@ -1,4 +1,5 @@
 'use strict';
+const templateExcelExport = require('./research_template');
 
 var plugin = {
     register: function (server, options, next) {
@@ -65,6 +66,35 @@ var plugin = {
                     //     .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                     //     .header('content-disposition', `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
 
+                }
+            },
+            {
+                method: "GET",
+                path: "/export3",
+                handler: function (request, reply) {
+
+                    //passing data, TODO:will be updated as payload
+                    let { data } = require('./data_r');
+
+                    const cloneDeep = require('lodash.cloneDeep');
+
+                    const templateResearch = cloneDeep(templateExcelExport.templateExcelExport);
+                    const { exportExcelTwoTab } = require('./transform');
+
+                    //generate two tabes
+                    let workbookExcel = exportExcelTwoTab(templateResearch, data);
+
+                    // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
+                    // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
+
+                    let fileName = `${(new Date()).getMilliseconds()}${templateResearch.workbookName}`;
+
+                    workbookExcel.xlsx.writeFile(fileName).then(function () {
+                        console.log("saved");
+                        // res.download('test.xlsx');
+                    });
+
+                    reply("Done").code(200);
                 }
             }
         ]
