@@ -33,14 +33,14 @@ const tabContent = function tabContent(template, excelData) {
     if (typeof tmpltHeaderValue == 'object') {
       headerData = tmpltHeaderValue;
       if (tmpltHeaderValue.hasOwnProperty('v')) {
-        headerData.v = `${tmpltHeaderValue.v}${dataHeaderValue}`;
+        headerData.value = `${tmpltHeaderValue.v}${dataHeaderValue}`;
       }
       else {
-        headerData.v = dataHeaderValue;
+        headerData.value = dataHeaderValue;
       }
     }
     else {
-      headerData.v = `${tmpltHeaderValue}${dataHeaderValue}`;
+      headerData.value = `${tmpltHeaderValue}${dataHeaderValue}`;
     }
 
     dataArray.push([headerData]);
@@ -87,15 +87,14 @@ const tabContent = function tabContent(template, excelData) {
     if (typeof tmpltFooterValue != 'undefined' && typeof tmpltFooterValue == 'object') {
       footerData = tmpltFooterValue;
       if (tmpltFooterValue.hasOwnProperty('v')) {
-
-        footerData.v = `${tmpltFooterValue.v}${dataFooterValue}`;
+        footerData.value = `${tmpltFooterValue.v}${dataFooterValue}`;
       }
       else {
-        footerData.v = dataFooterValue;
+        footerData.value = dataFooterValue;
       }
     }
     else {
-      footerData.v = `${tmpltFooterValue}${dataFooterValue}`;
+      footerData.value = `${tmpltFooterValue}${dataFooterValue}`;
     }
 
     dataArray.push([footerData]);

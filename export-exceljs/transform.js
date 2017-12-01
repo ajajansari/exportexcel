@@ -4,7 +4,7 @@
 var Excel = require('exceljs');
 const { tabContent } = require('../export-excel/methods/tabContent');
 const { finalizeSheet } = require('./finalizeSheet');
-const cloneDeep = require('lodash.cloneDeep');
+const lodash = require('lodash');
 
 // generate two tab excel files
 let exportExcelTwoTab = function (templateExcelExport, data) {
@@ -18,7 +18,7 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
         wb.created = new Date();
         wb.modified = new Date();
         wb.lastPrinted = new Date();
-        wb.properties.date1904 = true;
+        //wb.properties.date1904 = true;
 
         //return if template is undefined
         if (
@@ -39,9 +39,9 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
 
             //If the data is not undefined and and have data at index will find the dataForTab
             if (typeof templateExcelExport.sheets[index] != 'undefined') {
-                templateForTab = cloneDeep(templateExcelExport.sheets[index]);
+                templateForTab = lodash.cloneDeep(templateExcelExport.sheets[index]);
             } else {
-                templateForTab = cloneDeep(templateExcelExport.dynamicTabs);
+                templateForTab = lodash.cloneDeep(templateExcelExport.dynamicTabs);
                 //Object.assign(templateForTab, templateExcelExport.dynamicTabs);
             }
 
@@ -52,13 +52,21 @@ let exportExcelTwoTab = function (templateExcelExport, data) {
                 sheetName = `${templateForTab.name} - ${index}`;
             }
 
+            //append tabs/sheets to workbook
+            //wb.addRowsToSheet(sheetName, tabSheeDataArray).finalize();
+            let alreadySheet = wb.getWorksheet(sheetName);
+
+            if (wb.getWorksheet(sheetName)) {
+                console.log("TRUE");
+            }
+            else {
+                console.log("FALSE");
+            }
+
             //get the Tab/Sheet
             let tabSheeDataArray = tabContent(templateForTab, dataForTab);
 
-            //append tabs/sheets to workbook
-            //wb.addRowsToSheet(sheetName, tabSheeDataArray).finalize();
-
-            let sheet = wb.addWorksheet(sheetName, { views: [{ xSplit: 1, ySplit: 1 }] });
+            let sheet = wb.addWorksheet(sheetName);
             sheet.addRows(tabSheeDataArray);
             //sheet.addRow("").commit();
             //sheet.commit();

@@ -1,5 +1,6 @@
 'use strict';
 const templateExcelExport = require('./research_template');
+const templateDyanmicColumn = require('../export-exceljs/dynamicTemplate/template');
 
 var plugin = {
     register: function (server, options, next) {
@@ -76,9 +77,38 @@ var plugin = {
                     //passing data, TODO:will be updated as payload
                     let { data } = require('./data_r');
 
-                    const cloneDeep = require('lodash.cloneDeep');
+                    const lodash = require('lodash');
 
-                    const templateResearch = cloneDeep(templateExcelExport.templateExcelExport);
+                    const templateResearch = lodash.cloneDeep(templateExcelExport.templateExcelExport);
+                    const { exportExcelTwoTab } = require('./transform');
+
+                    //generate two tabes
+                    let workbookExcel = exportExcelTwoTab(templateResearch, data);
+
+                    // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
+                    // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
+
+                    let fileName = `${(new Date()).getMilliseconds()}${templateResearch.workbookName}`;
+
+                    workbookExcel.xlsx.writeFile(fileName).then(function () {
+                        console.log("saved");
+                        // res.download('test.xlsx');
+                    });
+
+                    reply("Done").code(200);
+                }
+            },
+            {
+                method: "GET",
+                path: "/export4",
+                handler: function (request, reply) {
+
+                    //passing data, TODO:will be updated as payload
+                    let { data } = require('../export-exceljs/dynamicTemplate/data');
+
+                    const lodash = require('lodash');
+
+                    const templateResearch = lodash.cloneDeep(templateDyanmicColumn.templateExcelExport);
                     const { exportExcelTwoTab } = require('./transform');
 
                     //generate two tabes

@@ -1,11 +1,11 @@
 'use strict';
 
-const cloneDeep = require('lodash.cloneDeep');
+const lodash = require('lodash');
 
 //this method will return Array of Array of a Json Object with Header at the Top position
 const jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template) {
   let dataToAoA = appendTodata || [];
-
+  const get = require('lodash/get');
   //append header, header keys
   let headerKeys = Object.keys(objData[0]);
 
@@ -23,22 +23,32 @@ const jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template
       let headerValueTemplate = template.dataHeaderTemplate[headerKey];
 
       //assign value to the template
-      headerValueTemplate.v = headerKey;
+      headerValueTemplate.value = headerKey;
 
       //assign header value with template
       headerValue = headerValueTemplate;
-    }
-    else {
-      //assign header
-      headerValue = { v: headerKey };
-    }
+    } else // apply template for data header
+      if (typeof template.dataHeaderTemplate != 'undefined' && template.dataHeaderTemplate.hasOwnProperty('columnStyle')) {
+
+        //get the template
+        let headerValueTemplate = template.dataHeaderTemplate['columnStyle'];
+
+        //assign value to the template
+        headerValueTemplate.value = headerKey;
+
+        //assign header value with template
+        headerValue = headerValueTemplate;
+      } else {
+        //assign header
+        headerValue = { value: headerKey };
+      }
 
     //append header with template
-    headerValues.push(headerValue);
+    headerValues.push(lodash.cloneDeep(headerValue));
   });
 
   //header with template
-  dataToAoA.push(headerValues);
+  dataToAoA.push(lodash.cloneDeep(headerValues));
 
   //append items
   objData.forEach((data) => {
@@ -46,62 +56,46 @@ const jsonToArrayOfArrayXlsxTemplate = function (objData, appendTodata, template
 
     //for each column in data
     headerKeys.forEach((headerKey) => {
-      let dataValue = {};
-
+      let dataValueTemplate = new Object;
       //assign the template to the column
       if (typeof template.dataValueTemplate != 'undefined' && template.dataValueTemplate.hasOwnProperty(headerKey)) {
 
         //get the column tempalte
-        let dataValueTemplate = template.dataValueTemplate[headerKey];
-
-        //get the data from the column
-        let value = data[headerKey];
-
-        //apply the link template to hyperlink column
-        if (typeof value == 'object' && value.hasOwnProperty('type') && value['type'] === 'Uri') {
-          dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
-          //dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
-          let target = value.hasOwnProperty('target') ? value['target'] : "";
-          dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
-          //dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
-        }
-        else {
-          dataValueTemplate.v = value;
-          //dataValueTemplate.value = value;
-        }
-
-        //assign value with template
-        dataValue = dataValueTemplate;
+        dataValueTemplate = template.dataValueTemplate[headerKey];
       }
-      else {
+      //get the data from the column
+      let value = data[headerKey];
 
-        //get the data from the column
-        let value = data[headerKey];
-        var dataValueTemplate = {};
-        //apply the link template to hyperlink column
-        if (typeof value == 'object' && value.hasOwnProperty('type') && value['type'] === 'Uri') {
-          dataValueTemplate.v = value.hasOwnProperty('value') ? value['value'] : ""; //XLSX
-          //dataValueTemplate.value = value.hasOwnProperty('value') ? value['value'] : ""; //excelJs
-          let target = value.hasOwnProperty('target') ? value['target'] : "";
-          dataValueTemplate.l = { Target: target, Tooltip: dataValueTemplate.v };
-          //dataValueTemplate.value = { text: dataValueTemplate.value, hyperlink: target }; //excelJs
+      //apply the link template to hyperlink column
+      if (typeof value == 'object' && value.hasOwnProperty('type')) {
+        const valueType = String(value['type']).toLocaleLowerCase();
+        const recodValue = get(value, 'value', "");
+        let numFormat = '';
+        dataValueTemplate.value = recodValue;
+        switch (valueType) {
+          case "uri":
+            const target = get(value, 'target', "")
+            dataValueTemplate.value = { text: recodValue, hyperlink: target };
+            break;
+          case "date":
+            numFormat = get(value, 'numFormat', "DD-MMM-YYYY");
+            dataValueTemplate.isDate = true;
+            dataValueTemplate.numFmt = numFormat;
+            break;
+          case "num":
+            numFormat = get(value, 'numFormat', "");
+            dataValueTemplate.numFmt = numFormat;
+            break;
         }
-        else {
-          dataValueTemplate.v = value;
-          //dataValueTemplate.value = value; //excelJs
-        }
-
-        //assign value with template
-        dataValue = dataValueTemplate;
-
+      } else {
+        dataValueTemplate.value = value;
       }
-
       //append the column data
-      dataArray.push(cloneDeep(dataValue));
+      dataArray.push(lodash.cloneDeep(dataValueTemplate));
     });
 
     //append data row
-    dataToAoA.push(cloneDeep(dataArray));
+    dataToAoA.push(lodash.cloneDeep(dataArray));
   });
 
   return dataToAoA;

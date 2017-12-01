@@ -1,48 +1,60 @@
 const Excel = require('exceljs');
+const lodash = require('lodash');
 
 module.exports.finalizeSheet = function (sheet, template) {
     sheet.eachRow(function (row, rowNumber) {
         row.eachCell(function (cell, colNumber) {
             let cellObjValue = cell.value;
-            if (typeof cellObjValue == "object") {
+            if (lodash.isObject(cellObjValue)) {
 
                 //add value
-                let cellValue = cellObjValue.hasOwnProperty('v') ? cellObjValue.v : "";
+                //const cellValue = lodash.get(cellObjValue, 'value', '');
+                const cellValue = cellObjValue.hasOwnProperty('value') ? cellObjValue.value : "";
 
-                if (cellObjValue.hasOwnProperty('l')) {//add hyperlink
-                    row.getCell(colNumber).value = { text: cellValue, hyperlink: cellObjValue.l.Target };
-                }
-                else if (cellObjValue.hasOwnProperty('numFmt')) {//add format
+                // if (cellObjValue.hasOwnProperty('l')) {//add hyperlink
+                //     row.getCell(colNumber).value = { text: cellValue, hyperlink: cellObjValue.l.Target };
+                // }
+                // else if (cellObjValue.hasOwnProperty('numFmt')) {//add format
 
-                    //add date formatting
-                    let cellFormatValue = (cellObjValue.hasOwnProperty('isDate') && cellObjValue.isDate) ? new Date(cellValue) : cellValue;
+                //     //add date formatting
+                //     const cellFormatValue = (cellObjValue.hasOwnProperty('isDate') && cellObjValue.isDate) ? new Date(cellValue) : cellValue;
 
+                //     row.getCell(colNumber).value = cellFormatValue;
+                //     row.getCell(colNumber).numFmt = cellObjValue.numFmt;
+                // }
+                // else {//add string
+                //     row.getCell(colNumber).value = cellValue;
+                // }
+
+
+                if (cellObjValue.hasOwnProperty('numFmt')) {//add format
+                    const cellFormatValue = (cellObjValue.hasOwnProperty('isDate') && cellObjValue.isDate) ? new Date(cellValue) : cellValue;
                     row.getCell(colNumber).value = cellFormatValue;
                     row.getCell(colNumber).numFmt = cellObjValue.numFmt;
                 }
-                else {//add string
+                else {
                     row.getCell(colNumber).value = cellValue;
                 }
 
                 //add styles/fonts
-                if (cellObjValue.hasOwnProperty('font')) {
-                    row.getCell(colNumber).font = cellObjValue.font;
+                if (cellObjValue.hasOwnProperty('style')) {
+                    row.getCell(colNumber).style = cellObjValue.style;
                 }
 
-                //add fill
-                if (cellObjValue.hasOwnProperty('fill')) {
-                    row.getCell(colNumber).fill = cellObjValue.fill;
-                }
+                // //add fill
+                // if (cellObjValue.hasOwnProperty('fill')) {
+                //     row.getCell(colNumber).fill = cellObjValue.fill;
+                // }
 
-                //add border
-                if (cellObjValue.hasOwnProperty('border')) {
-                    row.getCell(colNumber).border = cellObjValue.border;
-                }
+                // //add border
+                // if (cellObjValue.hasOwnProperty('border')) {
+                //     row.getCell(colNumber).border = cellObjValue.border;
+                // }
 
-                //add alignment
-                if (cellObjValue.hasOwnProperty('alignment')) {
-                    row.getCell(colNumber).alignment = cellObjValue.alignment;
-                }
+                // //add alignment
+                // if (cellObjValue.hasOwnProperty('alignment')) {
+                //     row.getCell(colNumber).alignment = cellObjValue.alignment;
+                // }
 
                 //merge cell
                 if (cellObjValue.hasOwnProperty('merge')) {
@@ -68,6 +80,6 @@ module.exports.finalizeSheet = function (sheet, template) {
     }
 
     sheet.addRow("").commit();
-    
+
     return sheet;
 }
