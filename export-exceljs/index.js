@@ -1,143 +1,127 @@
 'use strict';
-const templateExcelExport = require('./research_template');
-const templateDyanmicColumn = require('../export-exceljs/dynamicTemplate/template');
 
-var plugin = {
-    register: function (server, options, next) {
-        var routes = [
-            {
-                method: "GET",
-                path: "/export",
-                handler: function (request, reply) {
-                    var data = { key: 'value - twotab' }
-                    reply(data).code(201)
-                }
-            },
-            {
-                method: "GET",
-                path: "/export1",
-                handler: function (request, reply) {
-                    const { excelExport } = require('./demo1/image');
-                    excelExport();
-                    reply('Export1 - Done').code(201);
-                }
-            },
-            {
-                method: "GET",
-                path: "/export2",
-                handler: function (request, reply) {
+const Joi = require('joi');
+const Boom = require('boom');
+const exportExcelByTemplate = require('./methods/transform');
+const researchTemplate = require('./template/researchList/template');
+const dynamicColumnTemplate = require('./template/dynamicColumn/template');
+const groupColumnTemplate = require('./template/groupColumns/template');
+const cloneDeep = require('lodash/cloneDeep');
+const unstream = require('unstream');
 
-                    //passing data, TODO:will be updated as payload
-                    let { data } = require('./data');
+module.exports.register = function (server, options, next) {
+  server.log(['debug'], `Registering Export-ExcelJs Plugin at ${server.realm.modifiers.route.prefix}`);
 
-                    const templateExcelExport = require('./template');
-                    const { exportExcelTwoTab } = require('./transform');
+  //payload validation
+  const payLoadValidate = {
+    payload: Joi.array()
+      .min(2)
+      .items(
+      Joi.object().keys({
+        name: Joi.string().min(2),
+        header: Joi.object().required(),
+        dataColumnHeader: Joi.object(),
+        data: Joi.array().required(),
+        footer: Joi.object(),
+      })
+      ),
+  };
 
-                    //generate two tabes
-                    let workbookExcel = exportExcelTwoTab(templateExcelExport.templateExcelExport, data);
+  //handler request using template to get the excel export
+  const handlerWithTemplate = (request, reply, template) => {
+    // Block unauthorized access
+    // const fc_auth = request.state.fc_auth;
+    // if (!fc_auth) {
+    //   reply(Boom.unauthorized('You must be logged in to use this service.'));
+    // }
 
-                    // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
-                    // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
+    try {
+      let data = request.payload;
 
-                    let fileName = `${(new Date()).getMilliseconds()}${templateExcelExport.templateExcelExport.workbookName}`;
+      //generate excels
+      let excelWb = exportExcelByTemplate(template, data);
 
-                    workbookExcel.xlsx.writeFile(fileName).then(function () {
-                        console.log("saved");
-                        // res.download('test.xlsx'); 
-                    });
+      excelWb.xlsx.write(unstream({}, function (data) {
+        // data is your buffer
+        let buf = new Buffer(data, 'binary');
 
-                    reply("Done").code(200);
-                    // .then(function () {
-                    //     reply.end().type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                    //         .header('content-disposition', `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
+        //download the buffer
+        return reply(buf)
+          .encoding('binary')
+          .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+          .header('content-disposition', `attachment; filename=${template.workbookName};`);
+      }));
 
-                    // let buf = new Buffer(workbookStream, 'binary');
-                    // return reply(buf)
-                    //     .encoding('binary')
-                    //     .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                    //     .header('content-disposition', `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
-                    //});
-
-                    // //create buffer of workbook
-                    // let buf = new Buffer(workbookExcel, 'binary');
-
-                    // //download the buffer
-                    // return reply(buf)
-                    //     .encoding('binary')
-                    //     .type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                    //     .header('content-disposition', `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
-
-                }
-            },
-            {
-                method: "GET",
-                path: "/export3",
-                handler: function (request, reply) {
-
-                    //passing data, TODO:will be updated as payload
-                    let { data } = require('./data_r');
-
-                    const lodash = require('lodash');
-
-                    const templateResearch = lodash.cloneDeep(templateExcelExport.templateExcelExport);
-                    const { exportExcelTwoTab } = require('./transform');
-
-                    //generate two tabes
-                    let workbookExcel = exportExcelTwoTab(templateResearch, data);
-
-                    // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
-                    // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
-
-                    let fileName = `${(new Date()).getMilliseconds()}${templateResearch.workbookName}`;
-
-                    workbookExcel.xlsx.writeFile(fileName).then(function () {
-                        console.log("saved");
-                        // res.download('test.xlsx');
-                    });
-
-                    reply("Done").code(200);
-                }
-            },
-            {
-                method: "GET",
-                path: "/export4",
-                handler: function (request, reply) {
-
-                    //passing data, TODO:will be updated as payload
-                    let { data } = require('../export-exceljs/dynamicTemplate/data');
-
-                    const lodash = require('lodash');
-
-                    const templateResearch = lodash.cloneDeep(templateDyanmicColumn.templateExcelExport);
-                    const { exportExcelTwoTab } = require('./transform');
-
-                    //generate two tabes
-                    let workbookExcel = exportExcelTwoTab(templateResearch, data);
-
-                    // reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').se
-                    // reply.header("Content-Disposition", `attachment; filename=${templateExcelExport.templateExcelExport.workbookName};`);
-
-                    let fileName = `${(new Date()).getMilliseconds()}${templateResearch.workbookName}`;
-
-                    workbookExcel.xlsx.writeFile(fileName).then(function () {
-                        console.log("saved");
-                        // res.download('test.xlsx');
-                    });
-
-                    reply("Done").code(200);
-                }
-            }
-        ]
-
-        server.route(routes);
-
-        next();
+    } catch (err) {
+      let msg = `An error -- ${JSON.stringify(err)} -- occurred, while generating the excel.`;
+      server.log(['error'], msg);
+      return reply(Boom.badRequest('We errored!.'));
     }
+  };
+
+  //Home Request to Validate Export Plugin in Available
+  server.route([{
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+      reply('Export Excel Plugin Loaded Tested');
+    },
+  }]);
+
+  //this will load the data with research list Template
+  server.route([{
+    method: 'POST',
+    path: '/research',
+    config: {
+      validate: payLoadValidate,
+      handler: function (request, reply) {
+        const templateResearch = cloneDeep(researchTemplate.templateExcelExport);
+        handlerWithTemplate(request, reply, templateResearch);
+      },
+    },
+  }]);
+
+  //this will export excel with dynamic column template
+  server.route([{
+    method: 'POST',
+    path: '/dynamicColumn',
+    config: {
+      validate: payLoadValidate,
+      handler: function (request, reply) {
+        const templateDynamicColumn = cloneDeep(dynamicColumnTemplate.templateExcelExport);
+        handlerWithTemplate(request, reply, templateDynamicColumn);
+      },
+    },
+  }]);
+
+  //this will export excel with dynamic column Group template
+  server.route([{
+    method: 'POST',
+    path: '/groupColumn',
+    config: {
+      validate: payLoadValidate,
+      handler: function (request, reply) {
+        const templateGroupColumn = cloneDeep(groupColumnTemplate.templateExcelExport);
+        handlerWithTemplate(request, reply, templateGroupColumn);
+      },
+    },
+  }]);
+
+  //return 404 when routing not found
+  server.route([{
+    method: [
+      'GET',
+      'POST',
+    ],
+    path: '/{path*}',
+    handler: function (request, reply) {
+      reply(Boom.notFound('Method Not Found'));
+    },
+  }]);
+
+  next();
 };
 
-plugin.register.attributes = {
-    name: "export-exceljs",
-    version: "1.0.0"
-}
-
-module.exports = plugin;
+module.exports.register.attributes = {
+  pkg: require('./package.json')
+};

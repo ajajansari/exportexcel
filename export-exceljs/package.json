@@ -1,0 +1,9 @@
+{
+  "name": "export-exceljs",
+  "version": "0.1.0",
+  "main": "index.js",
+  "jshintConfig": {
+    "esversion": 6,
+    "node": true
+  }
+}
